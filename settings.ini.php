@@ -75,6 +75,21 @@ icon = "muximux-jackett"
 color = "#000000"
 enabled = "true"
 
+[Jellyfin]
+name = "JellyFin"
+url = "http://locip:8096"
+icon = "muximux-play2"
+color = "#674ea7"
+enabled = "true"
+
+[Lidarr]
+name = "Lidarr"
+url = "http://locip:8686"
+scale = 1
+icon = "muximux-music"
+color = "#93c47d"
+enabled = "true"
+
 [Minio]
 name = "Minio"
 url = "http://locip:9009"
@@ -104,7 +119,7 @@ name = "Ombi"
 url = "http://locip:3579"
 scale = 1
 icon = "muximux-plex"
-color = "#df691a"
+color = "#f9be03"
 enabled = "true"
 
 [Plex]
@@ -112,7 +127,7 @@ name = "Plex"
 url = "http://locip:32400/web"
 scale = 1
 icon = "muximux-plex"
-color = "#f9be03"
+color = "#df691a"
 enabled = "true"
 
 [Portainer]
@@ -131,8 +146,8 @@ icon = "muximux-sonarr"
 color = "#ffe599"
 enabled = "true"
 
-[SickRage]
-name = "SickRage"
+[SickChill]
+name = "SickChill"
 url = "http://locip:8081"
 scale = 1
 icon = "muximux-tv"

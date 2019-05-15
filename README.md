@@ -1,6 +1,6 @@
 # Mediabox
 
-Mediabox is meant to be an all Docker Container based media aggregator stack.
+Mediabox is an all Docker Container based media aggregator stack.
 
 Components include:
 
@@ -9,18 +9,20 @@ Components include:
 * [Duplicati Backup Software](https://www.duplicati.com/)
 * [Headphones](https://github.com/linuxserver/docker-headphones)
 * [Jackett Tracker API and Proxy](https://github.com/Jackett/Jackett)
+* [Jellyfin Free Software Media System](https://github.com/jellyfin/jellyfin)
+* [Lidarr Music collection manager](https://lidarr.audio/)
 * [Minio cloud storage](https://www.minio.io/)
 * [Muximux Web based HTPC manager](https://github.com/mescon/Muximux)
-* [NetData System Monitoring](https://github.com/firehol/netdata)
+* [NetData System Monitoring](https://github.com/netdata/netdata)
 * [NZBGet Usenet Downloader](https://nzbget.net/)  
 * [Ombi media assistant](http://www.ombi.io/)
+* [Ouroboros Automatic container updater](https://github.com/pyouroboros/ouroboros)
 * [Plex media server](https://www.plex.tv/)
 * [Portainer Docker Container manager](https://portainer.io/)
 * [Radarr movie library manager](https://radarr.video/)
-* [Sickrage TV library manager](https://sickrage.github.io/)
+* [SickChill TV library manager](https://github.com/SickChill/SickChill)
 * [Sonarr TV library manager](https://sonarr.tv/)
 * [Tautulli Plex Media Server monitor](https://github.com/tautulli/tautulli)
-* [Watchtower automatic container updater](https://github.com/v2tec/watchtower)
 
 ## Prerequisites
 
@@ -28,7 +30,6 @@ Components include:
 * [VPN account from Private internet Access](https://www.privateinternetaccess.com/) (Please see [binhex's Github Repo](https://github.com/binhex/arch-delugevpn) if you want to use a different VPN)
 * [Git](https://git-scm.com/)
 * [Docker](https://www.docker.com/)
-* [Python 2.7](https://www.python.org/)
 * [Docker-Compose](https://docs.docker.com/compose/)
 
 ### **PLEASE NOTE**
@@ -45,19 +46,26 @@ Start by updating and upgrading our current packages:
 
 Install the prerequisite packages:
 
-`$ sudo apt install git python bridge-utils`
+`$ sudo apt install curl git bridge-utils`
 
-**Note** - Mediabox uses Docker CE as the default Docker version now - if you skip this and run with older Docker versions you may have issues.
+**Note** - Mediabox uses Docker CE as the default Docker version - if you skip this and run with older/other Docker versions you may have issues.
 
-1. Uninstall old versions: `$ sudo apt remove docker docker-engine docker.io`
-    It’s OK if apt reports that none of these packages are installed.
-2. Install Docker CE: `$ sudo curl -fsSL https://get.docker.com/ | sh`
-3. Install Docker-Compose:
+1. Uninstall old versions - It’s OK if apt and/or snap report that none of these packages are installed.  
+    `$ sudo apt remove docker docker-engine docker.io containerd runc`  
+    `$ sudo snap remove docker`  
+
+2. Install Docker CE:  
+    `$ curl -fsSL https://get.docker.com -o get-docker.sh`  
+    `$ sudo sh get-docker.sh`  
+
+3. Install Docker-Compose:  
+
     ```bash
-    sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+    sudo curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
     ```
-4. Set the permissions: `$ sudo chmod +x /usr/local/bin/docker-compose`
-5. Verify the Docker Compose installation: `$ docker-compose -v`
+
+4. Set the permissions: `$ sudo chmod +x /usr/local/bin/docker-compose`  
+5. Verify the Docker Compose installation: `$ docker-compose -v`  
 
 Add the current user to the docker group:
 

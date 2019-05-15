@@ -13,10 +13,12 @@ body {
 <h1>Welcome to Mediabox!</h1>
 <h3><u>Basic Information & Configuration</u></h3>
 <b><u>Notes:</u></b><br /> 
-<li>Couchpotato and Radarr do the same thing = Movie Management</li>
-<li>Sonarr and Sickrage do the same thing = TV Show Management</li>
+<li>Radarr and Couchpotato do the same thing = Movie Management</li>
+<li>Sonarr and SickChill do the same thing = TV Show Management</li>
+<li>Lidar and Headphones do the same thing = Music Management</li>
 -- Generally you will only want to choose/use one of each.<br />
 <li>The <b>Minio</b> login is: minio / minio123.</li>
+<li><b>PROXY</b> The DelugeVPN Container provides an http proxy via the PIA connection at: locip:8118
 <br />
 <h3><u>Manual Configuration steps:</u></h3>  
 <b><u>Couchpotato:</u></b><br />
@@ -33,7 +35,7 @@ After the Wizard is complete:<br />
 <ul>
 <li> Click on the "gear" icon and select "Settings"<br />
 <li> Go to > Downloaders > Deluge > & click the "Test Deluge" button to verify the connection.<br />
-<li> Go to > Renamer - and turn it on > Click the "slider" to the right<br />
+<li> Go to > Renamer - and turn it on > click the "slider" to the right<br />
 <li>In the From field: /downloads<br />
 <li>In the To field: /movies<br />
 </ul>
@@ -41,7 +43,7 @@ After the Wizard is complete:<br />
 <b><u>Radarr:</u></b><br />
 <ul>
 <li>Click on the Settings icon<br />
-<li>Clock on the Download Client Tab<br />
+<li>Click on the Download Client Tab<br />
 <li>Click on the + sign to add a download client<br />
 <li>Under the "Torrent" section Select Deluge<br />
 <li>Enter these settings:<br />
@@ -55,12 +57,12 @@ After the Wizard is complete:<br />
 <li>Optional: Click on the media management tab and configure the renamer<br />
 </ul>
 <br />
-<b><u>Sonarr:</u></b><br />
+<b><u>Sonarr & Lidarr</u></b><br />
 <ul>
 <li>Same instructions as Radarr<br />
 </ul>
 <br />
-<b><u>Sickrage:</u></b><br />
+<b><u>SickChill:</u></b><br />
 <ul>
 <li>Click on the settings "gear" icon<br />
 <li>Go to > General > Misc > Show root directories<br />
@@ -78,10 +80,8 @@ After the Wizard is complete:<br />
 </ul>
 <br />
 <b><u>Headphones:</u></b><br />
-<ol>
-<li>Click on the "Cog" to get to the Settings<br />
-<li>Go to the Download Settings Tab<br />
-</ol>
+Click on the "Cog" to get to the Settings<br />
+Go to the Download Settings Tab<br />
 <u>For Usenet</u>:<br />
 <ul>
 <li>Select NZBGet<br/>
@@ -95,8 +95,12 @@ After the Wizard is complete:<br />
 <li>Select Deluge<br />
 <li>Deluge WebUI Host and Port: http://locip:8112<br />
 <li>Deluge Password: deluge (unless you have changed it)<br />
-<li>Move When Completed: /music<br />
 <li>Music Download Directory: /downloads<br />
+</ul>
+Go to the Quality & Post Processing Tab<br />
+<ul>
+<li>Check the box for: Move downloads to Destination Folder<br />
+<li>Destination Directory: /music
 </ul>
 <br />
 <b><u>PLEX:</u></b><br />
@@ -116,17 +120,13 @@ When adding libraries to PLEX use these settings:<br />
 <b><u>Portainer:</u></b><br />
 To help you manage your Mediabox Docker containers Portainer is available.<br />
 Portainer is a Docker Management UI to help you work with the containers etc.<br />
-If you notice the <b><u>Minio</u></b> container reporting as "Unhealthy" in Portainer from the commandline on your Mediabox server run this:<br />
-<code>$ docker exec minio sed -i "s/404/403/g" /usr/bin/healthcheck.sh</code><br />
-OR <br>
-From the Minio console in Portainer (Select /bin/sh) run just this: <code>sed -i "s/404/403/g" /usr/bin/healthcheck.sh</code>
 <br /><br />
 <b><u>Watchtower:</u></b><br />
 The Watchtower container monitors the all of the Mediabox containers and if there is an update to any container's base image it updates the container.<br />
 Watchtower will detect the change, download the new image, gracefully stop the container(s), and re-launch them with the new image.<br />
 <h1>Troubleshooting</h1>
 If you are having issues with Mediabox or any of your continers please take look at the settings being used.<br />
-Below are the variables in your .env file:
+Below are the variables in your .env file: (<b>NOTE</b>: For your security PIA credentials are no longer shown here.)
 <pre>
 <?php
 echo file_get_contents("./env.txt");

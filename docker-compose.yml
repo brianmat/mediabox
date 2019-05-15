@@ -28,7 +28,7 @@ services:
             - PGID=${PGID}
         volumes:
             - './couchpotato:/config'
-            - './content/completed:/downloads'
+            - '${DLDIR}/completed:/downloads'
             - '${MOVIEDIR}:/movies'
             - '/etc/localtime:/etc/localtime:ro'
 
@@ -60,12 +60,12 @@ services:
             - ENABLE_PRIVOXY=yes
             - STRICT_PORT_FORWARD=yes
             - LAN_NETWORK=${CIDR_ADDRESS}
-            - NAME_SERVERS=209.222.18.222,37.235.1.174,8.8.8.8,209.222.18.218,37.235.1.177,8.8.4.4
+            - NAME_SERVERS=209.222.18.222,37.235.1.174,1.1.1.1,8.8.8.8,209.222.18.218,37.235.1.177,1.0.0.1,8.8.4.4
             - DEBUG=false
             - PUID=${PUID}
             - PGID=${PGID}
         volumes:
-            - './content:/data'
+            - '${DLDIR}:/data'
             - './delugevpn/config:/config'
             - '/etc/localtime:/etc/localtime:ro'
 
@@ -104,7 +104,7 @@ services:
             - TZ=${TZ}
         volumes:
             - './headphones:/config'
-            - './content/completed:/downloads'
+            - '${DLDIR}/completed:/downloads'
             - '${MUSICDIR}:/music'
 
     # ----------------------------------------
@@ -122,7 +122,43 @@ services:
             - PGID=${PGID}
         volumes:
             - './jackett:/config'
-            - './content/completed:/downloads'
+            - '${DLDIR}/completed:/downloads'
+            - '/etc/localtime:/etc/localtime:ro'
+
+    # ----------------------------------------
+    # JELLYFIN
+    # ----------------------------------------
+    jellyfin:
+        image: jellyfin/jellyfin
+        container_name: jellyfin
+        restart: unless-stopped
+        network_mode: "host"
+        user: "${PUID}:${PGID}"
+        ports:
+            - '${IP_ADDRESS}:8096:8096'
+        volumes:
+            - './jellyfin:/config'
+            - '${TVDIR}:/media/tv'
+            - '${MOVIEDIR}:/media/movies'
+            - '/etc/localtime:/etc/localtime:ro'
+
+    # ----------------------------------------
+    # LIDARR
+    # ----------------------------------------
+    lidarr:
+        image: linuxserver/lidarr
+        container_name: lidarr
+        restart: unless-stopped
+        network_mode: "bridge"
+        ports:
+            - '${IP_ADDRESS}:8686:8686'
+        environment:
+            - PUID=${PUID}
+            - PGID=${PGID}
+        volumes:
+            - './lidarr:/config'
+            - '${DLDIR}/completed:/data/completed'
+            - '${MUSICDIR}:/music'
             - '/etc/localtime:/etc/localtime:ro'
 
     # ----------------------------------------
@@ -164,18 +200,21 @@ services:
     # NETDATA
     # ----------------------------------------
     netdata:
-        image: titpetric/netdata
+        image: netdata/netdata:latest
         container_name: netdata
+        hostname: '${HOSTNAME}'
         restart: unless-stopped
         network_mode: "bridge"
         ports:
             - '${IP_ADDRESS}:19999:19999'
         cap_add:
             - SYS_PTRACE
+        environment:
+            - PGID=${DOCKERGRP}
         volumes:
             - '/proc:/host/proc:ro'
             - '/sys:/host/sys:ro'
-            - '/var/run/docker.sock:/var/run/docker.sock'
+            - '/var/run/docker.sock:/var/run/docker.sock:ro'
 
     # ----------------------------------------
     # NZBGet
@@ -193,7 +232,7 @@ services:
           - '${IP_ADDRESS}:6789:6789'
         volumes:
           - './nzbget:/config'
-          - './content/completed:/downloads'
+          - '${DLDIR}/nbzget:/downloads'
 
     # ----------------------------------------
     # OMBI
@@ -211,6 +250,24 @@ services:
         volumes:
             - './ombi:/config'
             - '/etc/localtime:/etc/localtime:ro'
+
+    # ----------------------------------------
+    # OUROBOROS
+    # ----------------------------------------
+    ouroboros:
+        image: pyouroboros/ouroboros
+        container_name: ouroboros
+        restart: unless-stopped
+        network_mode: "bridge"
+        hostname: '${HOSTNAME}'
+        environment:
+            - CLEANUP=true
+            - CRON="0 */6 * * *"
+            - LOG_LEVEL=info
+            - SELF_UPDATE=true
+            - TZ=${TZ}
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock'
 
     # ----------------------------------------
     # PLEX
@@ -279,16 +336,16 @@ services:
             - PGID=${PGID}
         volumes:
             - './radarr:/config'
-            - './content/completed:/downloads'
+            - '${DLDIR}/completed:/data/completed'
             - '${MOVIEDIR}:/movies'
             - '/etc/localtime:/etc/localtime:ro'
 
     # ----------------------------------------
-    # SICKRAGE
+    # SICKCHILL
     # ----------------------------------------
-    sickrage:
+    sickchill:
         image: linuxserver/sickrage
-        container_name: sickrage
+        container_name: sickchill
         restart: unless-stopped
         network_mode: "bridge"
         ports:
@@ -297,8 +354,8 @@ services:
             - PUID=${PUID}
             - PGID=${PGID}
         volumes:
-            - './sickrage:/config'
-            - './content/completed:/downloads'
+            - './sickchill:/config'
+            - '${DLDIR}/completed:/downloads'
             - '${TVDIR}:/tv'
             - '/etc/localtime:/etc/localtime:ro'
 
@@ -318,7 +375,7 @@ services:
             - TZ=${TZ}
         volumes:
             - './sonarr:/config'
-            - './content/completed:/downloads'
+            - '${DLDIR}/completed:/data/completed'
             - '${TVDIR}:/tv'
             - '/etc/localtime:/etc/localtime:ro'
 
@@ -341,17 +398,3 @@ services:
             - './plex/Library/Application Support/Plex Media Server/Logs:/logs:ro'
         depends_on:
             - plex
-
-    # ----------------------------------------
-    # WATCHTOWER
-    # ----------------------------------------
-    watchtower:
-        image: v2tec/watchtower
-        container_name: watchtower
-        restart: unless-stopped
-        environment:
-            - TZ=${TZ}
-        network_mode: "bridge"
-        volumes:
-            - '/var/run/docker.sock:/var/run/docker.sock'
-        command: --schedule @midnight --cleanup
