@@ -232,7 +232,7 @@ services:
           - '${IP_ADDRESS}:6789:6789'
         volumes:
           - './nzbget:/config'
-          - '${DLDIR}/nbzget:/downloads'
+          - '${DLDIR}/nzbget:/downloads'
 
     # ----------------------------------------
     # OMBI
@@ -335,6 +335,7 @@ services:
             - PUID=${PUID}
             - PGID=${PGID}
         volumes:
+            - '${DLDIR}/nzbget:/downloads'
             - './radarr:/config'
             - '${DLDIR}/completed:/data/completed'
             - '${MOVIEDIR}:/movies'
@@ -374,6 +375,7 @@ services:
             - PGID=${PGID}
             - TZ=${TZ}
         volumes:
+            - '${DLDIR}/nzbget:/downloads'
             - './sonarr:/config'
             - '${DLDIR}/completed:/data/completed'
             - '${TVDIR}:/tv'
